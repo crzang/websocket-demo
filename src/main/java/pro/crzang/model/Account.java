@@ -1,13 +1,12 @@
 package pro.crzang.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Created by crzang on 30.06.16.
@@ -23,17 +22,10 @@ public class Account {
   @Column(unique = true)
   private String email;
 
-  @JsonIgnore
   private String password;
 
-  private String role = "ROLE_USER";
-
-  @JsonCreator
-  public Account(String email, String password) {
-    this.email = email;
-    this.password = password;
-  }
-
+  @OneToMany(mappedBy="account")
+  private List<AuthToken> authTokens;
   /**
    * Getter for property 'id'.
    *
@@ -53,6 +45,15 @@ public class Account {
   }
 
   /**
+   * Setter for property 'email'.
+   *
+   * @param email Value to set for property 'email'.
+   */
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  /**
    * Getter for property 'password'.
    *
    * @return Value for property 'password'.
@@ -65,11 +66,4 @@ public class Account {
     this.password = password;
   }
 
-  public String getRole() {
-    return role;
-  }
-
-  public void setRole(String role) {
-    this.role = role;
-  }
 }

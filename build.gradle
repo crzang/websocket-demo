@@ -10,7 +10,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+//apply plugin: 'spring-boot'
+apply plugin: 'war'
 
 jar {
     baseName = 'gs-messaging-stomp-websocket'
@@ -25,20 +26,28 @@ repositories {
 
 dependencies {
     compile 'org.slf4j:slf4j-api:latest.release'
-    compile 'org.springframework.boot:spring-boot-starter-websocket'
-    compile 'org.springframework:spring-messaging'
-    compile 'org.springframework:spring-orm'
-    compile 'org.springframework.data:spring-data-jpa'
-    compile 'com.zaxxer:HikariCP'
-    compile 'org.hsqldb:hsqldb'
-    compile('org.hibernate:hibernate-entitymanager'){
+    compile 'org.springframework.boot:spring-boot-starter-websocket:latest.release'
+    compile 'org.springframework:spring-messaging:latest.release'
+    compile 'org.springframework:spring-orm:latest.release'
+    compile 'org.springframework.data:spring-data-jpa:latest.release'
+    compile 'org.springframework:spring-aspects:latest.release'
+    compile 'com.zaxxer:HikariCP:latest.release'
+    compile 'org.hsqldb:hsqldb:latest.release'
+    compile('org.hibernate:hibernate-entitymanager:latest.release'){
         exclude group: 'pull-parser',module: 'pull-parser'
     }
     compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.9'
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
 
     testCompile 'junit:junit'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
+}
+
+war {
+    from 'src/main/webapp'
+    webInf { from 'src/main/webapp/WEB-INF' }
+    webXml = file('src/main/webapp/WEB-INF/web.xml')
 }

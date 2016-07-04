@@ -7,57 +7,24 @@
     <script type="text/javascript">
         var stompClient = null;
 
-        function setConnected(connected) {
-            document.getElementById('connect').disabled = connected;
-            document.getElementById('disconnect').disabled = !connected;
-            document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
-            document.getElementById('response').innerHTML = '';
-        }
-
-        function connect() {
-            var socket = new SockJS('/hello');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function(frame) {
-                setConnected(true);
-                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/greetings', function(greeting){
-                    showGreeting(JSON.parse(greeting.body).content);
-                });
-            });
-        }
-
-        function disconnect() {
-            if (stompClient != null) {
-                stompClient.disconnect();
+        function guid() {
+            function _p8(s) {
+                var p = (Math.random().toString(16)+"000000000").substr(2,8);
+                return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
             }
-            setConnected(false);
-            console.log("Disconnected");
-        }
-
-        function sendName() {
-            var name = document.getElementById('name').value;
-            stompClient.send("/app/hello", {}, JSON.stringify({ 'name': name }));
-        }
-
-        function showGreeting(message) {
-            var response = document.getElementById('response');
-            var p = document.createElement('p');
-            p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(message));
-            response.appendChild(p);
+            return _p8() + _p8(true) + _p8(true) + _p8();
         }
 
         function login() {
             if (stompClient == null) {
-                var socket = new SockJS('/auth');
+                var socket = new SockJS('/message');
                 stompClient = Stomp.over(socket);
                 stompClient.connect({}, function(frame) {
-                    setConnected(true);
-                    doLogin();
                     console.log('Connected: ' + frame);
-                    stompClient.subscribe('/topic/autorize', function(greeting){
-                        showAutorizeData(JSON.parse(greeting.body).content);
+                    stompClient.subscribe('/topic/message', function(message){
+                        showResponseData(JSON.parse(message.body));
                     });
+                    doLogin();
                 });
             }
             else{
@@ -66,34 +33,40 @@
         }
 
         function doLogin(){
-            var account=new Object();
-            account.email = document.getElementById('email').value;
-            account.password = document.getElementById('password').value;
-            stompClient.send("/app/auth", {}, JSON.stringify(account));
+            var message=new Object();
+            message.type="LOGIN_CUSTOMER";
+            message.sequence_id=guid();
+            message.data=new Object();
+            message.data.email = document.getElementById('email').value;
+            message.data.password = document.getElementById('password').value;
+            stompClient.send("/app/message", {}, JSON.stringify(message));
         }
-        function showAutorizeData(message){
+        function showResponseData(message){
             var response = document.getElementById('loginResponse');
-            var p = document.createElement('p');
-            p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(message));
-            response.appendChild(p);
+
+            while(response.childNodes.length) {
+                response.childNodes[0].parentNode.removeChild(response.childNodes[0]);
+            }
+            function appendTag(name,value) {
+                var p = document.createElement('p');
+                p.style.wordWrap = 'break-word';
+                p.appendChild(document.createTextNode(name+":"));
+                p.appendChild(document.createTextNode(value));
+                response.appendChild(p);
+            }
+            appendTag("type",message.type);
+            appendTag("sequence",message.sequence_id);
+            for(var propertyName in message.data) {
+                appendTag(propertyName,message.data[propertyName]);
+            }
+
         }
     </script>
 </head>
-<body onload="disconnect()">
+<body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div>
-    <div>
-        <button id="connect" onclick="connect();">Connect</button>
-        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
-    </div>
-    <div id="conversationDiv">
-        <label>What is your name?</label><input type="text" id="name" />
-        <button id="sendName" onclick="sendName();">Send</button>
-        <p id="response"></p>
-    </div>
-
     <div>
         <h2>Форма авторизации</h2>
         <label>E-mail</label>

@@ -13,6 +13,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 import org.springframework.util.ClassUtils;
 import pro.crzang.Application;
 
@@ -23,7 +24,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackageClasses = Application.class)
-class JpaConfig {
+class JpaConfig implements TransactionManagementConfigurer {
 
   @Value("${dataSource.driverClassName}")
   private String driver;
@@ -78,5 +79,10 @@ class JpaConfig {
   @Bean
   public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
     return new JpaTransactionManager(entityManagerFactory);
+  }
+
+  @Override
+  public PlatformTransactionManager annotationDrivenTransactionManager() {
+    return new JpaTransactionManager();
   }
 }

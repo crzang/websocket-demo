@@ -17,8 +17,4 @@ class ApplicationConfig {
     return new PropertySourcesPlaceholderConfigurer();
   }
 
-  /*@Bean
-  public PasswordEncoder passwordEncoder() {
-    return new StandardPasswordEncoder();
-  }*/
 }
