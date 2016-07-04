@@ -8,9 +8,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
-/**
- * Created by crzang on 30.06.16.
- */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "account")
@@ -62,6 +59,11 @@ public class Account {
     return password;
   }
 
+  /**
+   * Setter for property 'password'.
+   *
+   * @param password Value to set for property 'password'.
+   */
   public void setPassword(String password) {
     this.password = password;
   }

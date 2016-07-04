@@ -11,11 +11,4 @@
     <context:spring-configured/>
     <context:annotation-config/>
     <mvc:default-servlet-handler/>
-    <!--<websocket:message-broker application-destination-prefix="/app">
-        <websocket:stomp-endpoint path="/message">
-            <websocket:sockjs/>
-        </websocket:stomp-endpoint>
-        <websocket:simple-broker prefix="/topic"/>
-    </websocket:message-broker> -->
-    <!--<import resource="classpath:/WEB-INF/beans.xml" /> -->
 </beans>

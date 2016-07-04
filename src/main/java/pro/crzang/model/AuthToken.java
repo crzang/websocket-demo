@@ -9,7 +9,7 @@ import java.time.Period;
 import java.util.UUID;
 
 /**
- * Created by crzang on 04.07.16.
+ * Токен авторизации.
  */
 @SuppressWarnings("serial")
 @Entity
@@ -22,13 +22,17 @@ public class AuthToken {
   @ManyToOne
   private Account account;
 
-  private Instant created;
-
   private Instant expired;
 
+  private Instant created;
+  /**
+   * Конструктор.
+   * Срок истечения токена = текущее время + 1 день.
+   * Токен генерируется случайно.
+   */
   public AuthToken() {
-    created=Instant.now();
     expired =Instant.now().plus(Period.ofDays(1));
+    created=Instant.now();
     token= UUID.randomUUID().toString();
   }
 
@@ -68,23 +72,6 @@ public class AuthToken {
     this.account = account;
   }
 
-  /**
-   * Getter for property 'created'.
-   *
-   * @return Value for property 'created'.
-   */
-  public Instant getCreated() {
-    return created;
-  }
-
-  /**
-   * Setter for property 'created'.
-   *
-   * @param created Value to set for property 'created'.
-   */
-  public void setCreated(Instant created) {
-    this.created = created;
-  }
 
   /**
    * Getter for property 'expired'.
@@ -104,4 +91,21 @@ public class AuthToken {
     this.expired = expired;
   }
 
+  /**
+   * Getter for property 'created'.
+   *
+   * @return Value for property 'created'.
+   */
+  public Instant getCreated() {
+    return created;
+  }
+
+  /**
+   * Setter for property 'created'.
+   *
+   * @param created Value to set for property 'created'.
+   */
+  public void setCreated(Instant created) {
+    this.created = created;
+  }
 }

@@ -18,10 +18,10 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * Created by crzang on 30.06.16.
+ * Сервис авторизации и создания токенов авторизации.
  */
 
-@Service("ACCOUNT_SERVICE")
+@Service
 @Configurable
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class AccountService {
@@ -32,6 +32,10 @@ public class AccountService {
   private AuthTokenRepository authTokenRepository;
   private MessageDigest       md5;
 
+  /**
+   * Инициализация алгоритма шифрования пароля.
+   * Начальное заполнение данные.
+   */
   @PostConstruct
   protected void initialize() {
     try {
@@ -44,6 +48,12 @@ public class AccountService {
     save(newAccount("admin@host.com", "admin"));
   }
 
+  /**
+   * Создание экземпляра класса Account.
+   * @param email email
+   * @param pass password
+   * @return экземпляр класса Account
+   */
   private Account newAccount(String email, String pass) {
     Account account = new Account();
     account.setEmail(email);
@@ -51,6 +61,11 @@ public class AccountService {
     return account;
   }
 
+  /**
+   * Сохранение в БД.
+   * @param account аккаунт
+   * @return аккаунт
+   */
   @Transactional
   public Account save(Account account) {
     account.setPassword(new String(md5.digest(account.getPassword().getBytes())));
@@ -58,12 +73,23 @@ public class AccountService {
     return account;
   }
 
+  /**
+   * Авторизация.
+   * @param email идентификатор
+   * @param password пароль
+   * @return успешность авторизации
+   */
   public boolean autorize(String email, String password) {
     Account account = accountRepository.findOneByEmail(email);
     byte[] md5Password = md5.digest(password.getBytes());
     return account != null && account.getPassword().equals(new String(md5Password));
   }
 
+  /**
+   * Получение токена авторизации.
+   * @param email идентификатор.
+   * @return токен авторизации
+   */
   public AuthToken getAuthToken(String email) {
     Account account = accountRepository.findOneByEmail(email);
     checkExistAuthToken(account);
@@ -73,6 +99,10 @@ public class AccountService {
     return authToken;
   }
 
+  /**
+   * Проверка наличия существующих токенов авторизации. Сброс даты истечения.
+   * @param account account
+   */
   private void checkExistAuthToken(Account account) {
     List<AuthToken> tokens = authTokenRepository
         .findByAccountAndExpiredAfter(account, Instant.now());

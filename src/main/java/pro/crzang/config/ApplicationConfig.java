@@ -7,6 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import pro.crzang.Application;
 
+
 @Configuration
 @PropertySource("classpath:persistence.properties")
 @ComponentScan(basePackageClasses = Application.class)

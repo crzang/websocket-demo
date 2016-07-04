@@ -54,6 +54,12 @@
                 p.appendChild(document.createTextNode(value));
                 response.appendChild(p);
             }
+            if(message.type=='CUSTOMER_API_TOKEN'){
+                response.style.color="green";
+            }
+            else{
+                response.style.color="red";
+            }
             appendTag("type",message.type);
             appendTag("sequence",message.sequence_id);
             for(var propertyName in message.data) {

@@ -3,14 +3,23 @@ package pro.crzang.model;
 import java.util.Map;
 
 /**
- * Created by crzang on 30.06.16.
+ * Сообщение.
  */
 public class Message {
 
+  /**
+   * Тип сообщения.
+   */
   private String type;
 
+  /**
+   * id последовательности.
+   */
   private String sequence_id;
 
+  /**
+   * Данные.
+   */
   private Map<String,String> data;
 
   /**
@@ -66,10 +75,5 @@ public class Message {
   public void setData(Map<String, String> data) {
     this.data = data;
   }
-  
-  public interface Type{
-    String ERROR_REQUEST   = "ERROR_REQUEST";
-    String CUSTOMER_API_TOKEN = "CUSTOMER_API_TOKEN";
-    String CUSTOMER_ERROR="CUSTOMER_ERROR";
-  }
+
 }
