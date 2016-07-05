@@ -92,11 +92,14 @@ public class AccountService {
    */
   public AuthToken getAuthToken(String email) {
     Account account = accountRepository.findOneByEmail(email);
-    checkExistAuthToken(account);
-    AuthToken authToken = new AuthToken();
-    authToken.setAccount(account);
-    authTokenRepository.save(authToken);
-    return authToken;
+    if(account!=null) {
+      checkExistAuthToken(account);
+      AuthToken authToken = new AuthToken();
+      authToken.setAccount(account);
+      authTokenRepository.save(authToken);
+      return authToken;
+    }
+    return null;
   }
 
   /**

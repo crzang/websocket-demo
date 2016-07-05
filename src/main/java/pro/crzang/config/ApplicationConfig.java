@@ -11,7 +11,7 @@ import pro.crzang.Application;
 @Configuration
 @PropertySource("classpath:persistence.properties")
 @ComponentScan(basePackageClasses = Application.class)
-class ApplicationConfig {
+public class ApplicationConfig {
 
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
